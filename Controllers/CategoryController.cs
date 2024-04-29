@@ -1,9 +1,11 @@
 ﻿using ECommerceShoppingApplication.Data;
 using ECommerceShoppingApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceShoppingApplication.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class CategoryController : Controller
     {
         private ApplicationDBContext db;
