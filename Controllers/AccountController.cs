@@ -1,5 +1,6 @@
 ﻿using ECommerceShoppingApplication.Data;
 using ECommerceShoppingApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Evaluation;
@@ -53,7 +54,7 @@ namespace ECommerceShoppingApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult SignUp (RegisterUser userModel)
+        public async Task<IActionResult> SignUp (RegisterUser userModel)
         {
             if (ModelState.IsValid) {
                 var userExists = _userManager.FindByNameAsync(userModel.UserName).Result;    
@@ -75,10 +76,10 @@ namespace ECommerceShoppingApplication.Controllers
                 if (result.Succeeded)
                 {
                     if (!_roleManager.RoleExistsAsync(userModel.Role).Result)
-                       _roleManager.CreateAsync(new IdentityRole(userModel.Role));
+                       await _roleManager.CreateAsync(new IdentityRole(userModel.Role));
 
                     if (_roleManager.RoleExistsAsync(userModel.Role).Result)
-                        _userManager.AddToRoleAsync(user, userModel.Role);
+                        await _userManager.AddToRoleAsync(user, userModel.Role);
 
                     TempData["Success"] = "You have registered successfully";
 
@@ -92,6 +93,13 @@ namespace ECommerceShoppingApplication.Controllers
 
             }
             return View(userModel);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction(nameof(Login));
         }
     }
 }
