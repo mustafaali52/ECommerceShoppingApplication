@@ -6,6 +6,24 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<ApplicationDBContext>(
+        options => options.UseSqlServer(
+                builder.Configuration.GetConnectionString("DefaultConnection")
+            )
+    );
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(
+    options =>
+    {
+        options.Password.RequiredLength = 8;
+        //options.Password.RequireDigit = true;
+        //options.Password.RequireLowercase = true;
+        //options.Password.RequireUppercase = true;
+    }
+)
+    .AddEntityFrameworkStores<ApplicationDBContext>()
+    .AddDefaultTokenProviders();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(
     options =>
         {
@@ -15,25 +33,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         }
     );
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(
-    options =>
-    {
-        options.Password.RequiredLength = 8;
-        options.Password.RequireDigit = true;
-        options.Password.RequireLowercase = true;
-        options.Password.RequireUppercase = true;
-    }
-)
-    .AddEntityFrameworkStores<ApplicationDBContext>()
-    .AddDefaultTokenProviders();
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<ApplicationDBContext>(
-        options => options.UseSqlServer(
-                builder.Configuration.GetConnectionString("DefaultConnection")
-            )
-    );
+
 
 var app = builder.Build();
 

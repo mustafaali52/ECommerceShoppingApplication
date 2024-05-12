@@ -53,45 +53,88 @@ namespace ECommerceShoppingApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult SignUp (RegisterUser userModel)
+        public async Task<IActionResult> SignUp (RegisterUser userModel)
         {
-            if (ModelState.IsValid) {
-                var userExists = _userManager.FindByNameAsync(userModel.UserName).Result;    
-                if (userExists!= null)
+            if (ModelState.IsValid)
+            {
+                var userExists = _userManager.FindByNameAsync(userModel.UserName).Result;
+                if (userExists != null)
                 {
                     ModelState.AddModelError(string.Empty, "User already exists!");
                     return View(userModel);
                 }
 
-                var user = new ApplicationUser
+                var user = new ApplicationUser()
                 {
                     UserName = userModel.UserName,
+                    SecurityStamp = Guid.NewGuid().ToString(),
                     Email = userModel.Email,
                     FirstName = userModel.FirstName,
                     LastName = userModel.LastName,
+                    EmailConfirmed = true,
+                    PhoneNumberConfirmed = true,
                 };
 
                 var result = _userManager.CreateAsync(user, userModel.PasswordHash).Result;
-                if (result.Succeeded)
+                if (!result.Succeeded)
                 {
-                    if (!_roleManager.RoleExistsAsync(userModel.Role).Result)
-                       _roleManager.CreateAsync(new IdentityRole(userModel.Role));
-
-                    if (_roleManager.RoleExistsAsync(userModel.Role).Result)
-                        _userManager.AddToRoleAsync(user, userModel.Role);
-
-                    TempData["Success"] = "You have registered successfully";
-
-                    return RedirectToAction("Login", "Account");
+                    return View(userModel);
                 }
 
-                foreach (var error in result.Errors)
+                if (!_roleManager.RoleExistsAsync(userModel.Role).Result)
+                    await _roleManager.CreateAsync(new IdentityRole(userModel.Role));
+
+
+                if (_roleManager.RoleExistsAsync(userModel.Role).Result)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    await _userManager.AddToRoleAsync(user, userModel.Role);
                 }
+
+                TempData["Success"] = "You have registered successfully";
 
             }
-            return View(userModel);
+
+
+            //if (!ModelState.IsValid) { return View(userModel); }
+            //var result = await RegisterAsync(userModel);
+            //TempData["msg"] = result;
+            return View(nameof(SignUp));
+        }
+
+
+        public async Task<bool>  RegisterAsync(RegisterUser model)
+        {
+            var userExists = await _userManager.FindByNameAsync(model.UserName);
+            if (userExists != null)
+            {
+                return false;
+            }
+            ApplicationUser user = new ApplicationUser()
+            {
+                Email = model.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = model.UserName,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+            };
+            var result = await _userManager.CreateAsync(user, model.PasswordHash);
+            if (!result.Succeeded)
+            {
+                return false;
+            }
+
+            if (!await _roleManager.RoleExistsAsync(model.Role))
+                await _roleManager.CreateAsync(new IdentityRole(model.Role));
+
+
+            if (await _roleManager.RoleExistsAsync(model.Role))
+            {
+                await _userManager.AddToRoleAsync(user, model.Role);
+            }
+
+            return true;
         }
     }
 }
