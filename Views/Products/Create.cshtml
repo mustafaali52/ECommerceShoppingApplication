@@ -1,0 +1,46 @@
+﻿@model Products
+
+<form asp-action="Create" method="post">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2>Create Products</h2>
+            <hr />
+        </div>
+        <div asp-validation-summary="All"></div>
+        <div class="mb-3">
+            <label asp-for="ProductName"></label>
+            <input asp-for="ProductName" class="form-control" />
+            <span asp-validation-for="ProductName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ProductDescription"></label>
+            <input asp-for="ProductDescription" class="form-control" />
+            <span asp-validation-for="ProductDescription" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="categoryId"></label>
+            <select asp-for="categoryId" asp-items="@ViewBag.Categories">
+                <option value="">Select.....!</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ProductPrice"></label>
+            <input asp-for="ProductPrice" class="form-control" />
+            <span asp-validation-for="ProductPrice" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ProductRatings"></label>
+            <input asp-for="ProductRatings" class="form-control" />
+            <span asp-validation-for="ProductRatings" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Comments"></label>
+            <input asp-for="Comments" class="form-control" />
+            <span asp-validation-for="Comments" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:150px;">Create</button>
+    </div>
+
+</form>

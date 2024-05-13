@@ -14,7 +14,7 @@ namespace ECommerceShoppingApplication.Models
         [Display(Name = "Description")]
         public string ProductDescription { get; set; }
 
-        public int ProductCategoryId { get; set; }
+        public int categoryId { get; set; }
         public Category Category { get; set; }
 
         [Display(Name = "Price")]
