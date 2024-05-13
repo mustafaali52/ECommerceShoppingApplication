@@ -47,7 +47,18 @@ namespace ECommerceShoppingApplication.Controllers
             return View(user);
         }
 
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return View(nameof(Login));
+        }
+
         public IActionResult SignUp()
+        {
+            return View();
+        }
+
+        public IActionResult AccessDenied()
         {
             return View();
         }
@@ -75,10 +86,10 @@ namespace ECommerceShoppingApplication.Controllers
                 if (result.Succeeded)
                 {
                     if (!_roleManager.RoleExistsAsync(userModel.Role).Result)
-                       _roleManager.CreateAsync(new IdentityRole(userModel.Role));
+                        _ = _roleManager.CreateAsync(new IdentityRole(userModel.Role)).Result;
 
                     if (_roleManager.RoleExistsAsync(userModel.Role).Result)
-                        _userManager.AddToRoleAsync(user, userModel.Role);
+                        _ = _userManager.AddToRoleAsync(user, userModel.Role).Result;
 
                     TempData["Success"] = "You have registered successfully";
 

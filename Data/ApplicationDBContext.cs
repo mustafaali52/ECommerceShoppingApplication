@@ -12,5 +12,6 @@ namespace ECommerceShoppingApplication.Data
         }
 
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Products> Products { get; set; }   
     }
 }

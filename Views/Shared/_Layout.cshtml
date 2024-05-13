@@ -29,6 +29,9 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Category" asp-action="Index">Category</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Products" asp-action="Index">Products</a>
+                        </li>
                         @*<li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
                             <div class="dropdown-menu">
@@ -41,8 +44,14 @@
                         </li>*@
                     </ul>
                     <form class="d-flex">
+                        @if (@User.Identity.IsAuthenticated)
+                        {
+                            <span class="badge bg-primary">@User.Identity.Name</span> <span class="badge rounded-pill bg-warning"><a asp-controller="Account" asp-action="Logout">Logout</a></span>
+                        }
+                        else
+                        {
                             <a class="btn btn-secondary" asp-controller="Account" asp-action="Login">Login</a>
-                        @*<button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>*@
+                        }
                     </form>
                 </div>
             </div>

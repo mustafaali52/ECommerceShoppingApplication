@@ -16,5 +16,7 @@ namespace ECommerceShoppingApplication.Models
         public int DisplayOrder { get; set; }
 
         public DateTime CreatedDate { get; set; } = DateTime.Now;
+
+        public ICollection<Products> Products { get; set; }
     }
 }

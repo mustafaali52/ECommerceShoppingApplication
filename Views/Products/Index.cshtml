@@ -1,6 +1,45 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-<h2 class="text-primary">List of Products</h2>
+﻿@model IEnumerable<Products>
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6 text-end">
+            <a asp-asp-controller="Products" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle">&nbsp; Create New Product</i>
+            </a>
+        </div>
+    </div>
+    <br />
+    <partial name="_Notification" />
+    <br />
+    <h2 class="text-primary">List of Products</h2>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Category</th>
+                <th scope="col">Price</th>
+                <th scope="col">Rating</th>
+                <th scope="col">Comments</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                <tr class="table-active">
+                    <td>@product.ProductName</td>
+                    <td>@product.ProductDescription</td>
+                    <td>@product.Category.CategoryName</td>
+                    <td>@product.ProductPrice</td>
+                    <td>@product.ProductRatings</td>
+                    <td>@product.Comments</td>
+                    <td>
+                        <a class="btn btn-primary" asp-controller="Products" asp-action="Edit" asp-route-id="@product.Id"><i class="bi bi-pencil-square"></i>Edit</a>
+                        <a class="btn btn-primary" asp-controller="Products" asp-action="Delete" asp-route-id="@product.Id"><i class="bi bi-trash-fill"></i>Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
